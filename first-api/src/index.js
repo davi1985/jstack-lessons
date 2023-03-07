@@ -1,8 +1,8 @@
-const http = require('http');
-const { URL } = require('url');
+const http = require("http");
+const { URL } = require("url");
 
-const routes = require('../routes');
-const bodyParser = require('./helpers/bodyParser');
+const routes = require("../routes");
+const bodyParser = require("./helpers/bodyParser");
 
 const server = http.createServer((request, response) => {
   const parseUrl = new URL(`http://localhost:3333${request.url}`);
@@ -14,7 +14,7 @@ const server = http.createServer((request, response) => {
   let { pathname } = parseUrl;
   let id = null;
 
-  const splitEndpoint = pathname.split('/').filter(Boolean);
+  const splitEndpoint = pathname.split("/").filter(Boolean);
 
   if (splitEndpoint.length > 1) {
     pathname = `/${splitEndpoint[0]}/:id`;
@@ -32,21 +32,21 @@ const server = http.createServer((request, response) => {
     request.params = { id };
 
     response.send = (statusCode, body) => {
-      response.writeHead(statusCode, { 'Content-Type': 'application/json' });
+      response.writeHead(statusCode, { "Content-Type": "application/json" });
       response.end(JSON.stringify(body));
     };
 
-    if (['POST', 'PUT', 'PATCH'].includes(request.method)) {
+    if (["POST", "PUT", "PATCH"].includes(request.method)) {
       bodyParser(request, () => route.handler(request, response));
     } else {
       route.handler(request, response);
     }
   } else {
-    response.writeHead(404, { 'Content-Type': 'text/html' });
+    response.writeHead(404, { "Content-Type": "text/html" });
     response.end(`Cannot ${request.method} ${parseUrl.pathname}`);
   }
 });
 
 server.listen(3333, () =>
-  console.log('🚀 Server started at http://localhost:3333')
+  console.log("🚀 Server started at http://localhost:3333")
 );
